@@ -49,20 +49,49 @@ program
   });
 
 program
-  .command('query')
+  .command('query <query>')
   .description('Query the API')
-  .requiredOption('--query <query>', 'Query string')
   .option('--topK <topK>', 'Number of top results', parseInt)
   .option('--generate', 'Generate results', false)
   .option('--api <address>', 'API address')
-  .action(async (opts: { query: string; topK?: number; generate?: boolean; api?: string }) => {
+  .action(async (query, opts: { topK?: number; generate?: boolean; api?: string }) => {
     const api = getApiAddress(opts.api);
-    const payload: any = { query: opts.query };
+    const payload: any = { query: query };
     if (opts.topK) payload.topK = opts.topK;
     if (opts.generate) payload.generate = true;
     try {
       const res = await axios.post(`${api}/api/query`, payload);
       console.log(res.data);
+    } catch (err: any) {
+      console.error('Error:', err.response?.data || err.message);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('clear')
+  .description('Clear the vectorstore (requires double confirmation)')
+  .option('--api <address>', 'API address')
+  .action(async (opts: { api?: string }) => {
+    const readline = await import('readline');
+    function ask(question: string): Promise<string> {
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      return new Promise(resolve => rl.question(question, ans => { rl.close(); resolve(ans); }));
+    }
+    const first = (await ask('Are you sure you want to clear the vectorstore? (yes/no): ')).toLowerCase();
+    if (first !== 'yes') {
+      console.log('Aborted.');
+      process.exit(0);
+    }
+    const second = (await ask('This action is irreversible. Confirm again (yes/no): ')).toLowerCase();
+    if (second !== 'yes') {
+      console.log('Aborted.');
+      process.exit(0);
+    }
+    const api = getApiAddress(opts.api);
+    try {
+      const res = await axios.post(`${api}/api/vectorstore/clear`);
+      console.log('Vectorstore cleared:', res.data);
     } catch (err: any) {
       console.error('Error:', err.response?.data || err.message);
       process.exit(1);
