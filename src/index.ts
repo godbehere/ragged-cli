@@ -13,9 +13,9 @@ function getApiAddress(cmdApi?: string) {
 }
 
 program
-  .name('rag-cli')
+  .name('ragged-cli')
   .description('CLI for interacting with a RAG API')
-  .version('1.0.0');
+  .version('0.1.0');
 
 program
   .command('ingest')

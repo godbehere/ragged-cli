@@ -1,9 +1,9 @@
 {
-  "name": "rag-cli",
+  "name": "ragged-cli",
   "version": "0.1.0",
   "main": "dist/index.js",
   "bin": {
-    "rag-cli": "dist/index.js"
+    "ragged-cli": "dist/index.js"
   },
   "type": "module",
   "scripts": {
