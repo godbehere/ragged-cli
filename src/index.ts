@@ -49,12 +49,38 @@ program
   });
 
 program
+  .command('ingest:text <text>')
+  .description('Ingest text into the API')
+  .option('--docId <docId>', 'Document ID')
+  .option('--title <title>', 'Title of the document')
+  .option('--sourceType <sourceType>', 'Source type (e.g., "text")')
+  .option('--api <address>', 'API address')
+  .action(async (text: string, opts: { docId?: string; title?: string; sourceType?: string; api?: string }) => {
+    const api = getApiAddress(opts.api);
+    const payload: any = { text: text };
+    if (opts.docId)
+        payload.docId = opts.docId;
+    if (opts.title)
+        payload.title = opts.title;
+    if (opts.sourceType)
+        payload.sourceType = opts.sourceType;
+    try {
+        const res = await axios.post(`${api}/api/ingest/text`, payload);
+        console.log(res.data);
+    }
+    catch (err: any) {
+        console.error('Error:', err.response?.data || err.message);
+        process.exit(1);
+    }
+  });
+
+program
   .command('query <query>')
   .description('Query the API')
   .option('--topK <topK>', 'Number of top results', parseInt)
   .option('--generate', 'Generate results', false)
   .option('--api <address>', 'API address')
-  .action(async (query, opts: { topK?: number; generate?: boolean; api?: string }) => {
+  .action(async (query: string, opts: { topK?: number; generate?: boolean; api?: string }) => {
     const api = getApiAddress(opts.api);
     const payload: any = { query: query };
     if (opts.topK) payload.topK = opts.topK;
