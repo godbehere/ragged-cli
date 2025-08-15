@@ -41,6 +41,8 @@ node dist/index.js [command]
 
 
 ### Commands
+- `ingest:text <text> [--docId <docId> --title <title> --sourceType <sourceType>]`
+	- Ingests plan text and via endpoint `/api/ingest/text`, chunks, embeds, and upserts to the vector store. 
 
 - `ingest --files <file1,file2,...> --urls <url1,url2,...>`
 	- Ingests documents and/or URLs using the `/api/ingest/files` endpoint of the rag-project API. Sources are chunked and embedded using an LLM, then upserted to the vector store.
