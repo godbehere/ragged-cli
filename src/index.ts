@@ -52,16 +52,16 @@ program
   .command('ingest:text <text>')
   .description('Ingest text into the API')
   .option('--docId <docId>', 'Document ID')
-  .option('--title <title>', 'Title of the document')
+  .option('--source <source>', 'Source of the document')
   .option('--sourceType <sourceType>', 'Source type (e.g., "text")')
   .option('--api <address>', 'API address')
-  .action(async (text: string, opts: { docId?: string; title?: string; sourceType?: string; api?: string }) => {
+  .action(async (text: string, opts: { docId?: string; source?: string; sourceType?: string; api?: string }) => {
     const api = getApiAddress(opts.api);
     const payload: any = { text: text };
     if (opts.docId)
         payload.docId = opts.docId;
-    if (opts.title)
-        payload.title = opts.title;
+    if (opts.source)
+        payload.source = opts.source;
     if (opts.sourceType)
         payload.sourceType = opts.sourceType;
     try {
